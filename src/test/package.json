@@ -1,6 +1,6 @@
 {
   "name": "vscode-jupyter-lsp-middleware",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "",
   "main": "./extension.js",
   "publisher": "ms-vscode",
@@ -21,5 +21,29 @@
   "activationEvents": [
     "*"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+  },
+  "type": "module",
+  "private": "false",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "Nikola Hristov",
+    "email": "nikola@nikolahristov.tech",
+    "url": "https://nikolahristov.tech"
+  },
+  "scripts": {
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
+  },
+  "devDependencies": {
+    "typescript-esbuild": "0.3.1"
+  }
 }
