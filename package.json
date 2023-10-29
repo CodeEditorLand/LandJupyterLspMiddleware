@@ -1,36 +1,40 @@
 {
   "name": "@vscode/jupyter-lsp-middleware",
   "version": "0.0.1",
+  "private": "false",
   "description": "VS Code Python Language Server Middleware for Jupyter Notebook",
-  "main": "dist/node/index.js",
-  "types": "dist/node/index.d.ts",
-  "scripts": {
-    "compile": "tsc -p ./",
-    "copyTestAssets": "node ./scripts/prepareTest.js",
-    "compilewatch": "tsc -watch -p ./",
-    "buildTests": "npm run download-api && npm run copyTestAssets && npm run compilewatch",
-    "test": "npm run compile && npm run copyTestAssets && node ./out/test/runTest.js",
-    "download-api": "vscode-dts dev",
-    "postdownload-api": "vscode-dts main",
-    "webpack": "webpack --mode production && node ./scripts/optimizeTypings.js",
-    "webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js",
-    "webpack-dev": "webpack --mode development --watch",
-    "prepare": "npm run download-api",
-    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+  },
+  "license": "MIT",
   "author": {
     "name": "Nikola Hristov",
     "email": "nikola@nikolahristov.tech",
     "url": "https://nikolahristov.tech"
   },
-  "license": "MIT",
-  "engines": {
-    "vscode": "1.67.0-insider"
+  "publisher": "playform",
+  "type": "module",
+  "main": "dist/node/index.js",
+  "types": "dist/node/index.d.ts",
+  "scripts": {
+    "buildTests": "npm run download-api && npm run copyTestAssets && npm run compilewatch",
+    "compile": "tsc -p ./",
+    "compilewatch": "tsc -watch -p ./",
+    "copyTestAssets": "node ./scripts/prepareTest.js",
+    "download-api": "vscode-dts dev",
+    "postdownload-api": "vscode-dts main",
+    "prepare": "npm run download-api",
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts",
+    "test": "npm run compile && npm run copyTestAssets && node ./out/test/runTest.js",
+    "webpack": "webpack --mode production && node ./scripts/optimizeTypings.js",
+    "webpack-dev": "webpack --mode development --watch",
+    "webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js"
   },
-  "enabledApiProposals": [
-    "notebookEditorEdit",
-    "notebookEditor"
-  ],
   "dependencies": {
     "@vscode/lsp-notebook-concat": "0.1.17",
     "fast-myers-diff": "3.1.0",
@@ -58,27 +62,24 @@
     "tmp": "0.2.1",
     "ts-loader": "9.5.0",
     "typescript": "5.2.2",
+    "typescript-esbuild": "0.3.1",
     "uuid": "9.0.1",
     "vscode-dts": "0.3.3",
     "vscode-test": "1.3.0",
     "webpack": "5.89.0",
-    "webpack-cli": "5.1.4",
-    "typescript-esbuild": "0.3.1"
+    "webpack-cli": "5.1.4"
   },
-  "overrides": {
-    "terser@<5.14.2": "5.14.2"
+  "engines": {
+    "vscode": "1.67.0-insider"
   },
-  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
-  "bugs": {
-    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
-  },
-  "type": "module",
-  "private": "false",
   "publishConfig": {
     "access": "public"
+  },
+  "enabledApiProposals": [
+    "notebookEditorEdit",
+    "notebookEditor"
+  ],
+  "overrides": {
+    "terser@<5.14.2": "5.14.2"
   }
 }
