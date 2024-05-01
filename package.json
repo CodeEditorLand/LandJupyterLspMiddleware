@@ -1,46 +1,17 @@
 {
-	"name": "@vscode/jupyter-lsp-middleware",
-	"version": "0.0.1",
-	"private": false,
-	"description": "VS Code Python Language Server Middleware for Jupyter Notebook",
-	"keywords": [
-		"land"
-	],
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandJupyterLSPMiddleware#readme",
-	"bugs": {
-		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandJupyterLSPMiddleware/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/LandJupyterLSPMiddleware.git"
-	},
-	"license": "SEE LICENSE IN LICENSE",
 	"author": {
-		"name": "🌆 — Land —",
 		"email": "Land@PlayForm.Cloud",
+		"name": "🌆 — Land —",
 		"url": "HTTPS://Land.PlayForm.Cloud"
 	},
-	"type": "module",
-	"main": "dist/node/index.js",
-	"types": "dist/node/index.d.ts",
-	"scripts": {
-		"Document": "Document 'Source/**/*.ts'",
-		"buildTests": "npm run download-api && npm run copyTestAssets && npm run compilewatch",
-		"compile": "tsc -p ./",
-		"compilewatch": "tsc -watch -p ./",
-		"copyTestAssets": "node ./scripts/prepareTest.js",
-		"download-api": "vscode-dts dev",
-		"postdownload-api": "vscode-dts main",
-		"prepare": "npm run download-api",
-		"prepublishOnly": "Build 'Source/**/*.ts'",
-		"webpack": "webpack --mode production && node ./scripts/optimizeTypings.js",
-		"webpack-dev": "webpack --mode development --watch",
-		"webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js"
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandJupyterLSPMiddleware/issues"
 	},
 	"dependencies": {
 		"fast-myers-diff": "3.2.0",
 		"sha.js": "2.4.11"
 	},
+	"description": "VS Code Python Language Server Middleware for Jupyter Notebook",
 	"devDependencies": {
 		"@playform/build": "0.0.7",
 		"@playform/document": "0.0.6",
@@ -61,14 +32,43 @@
 		"ts-loader": "9.5.1",
 		"uuid": "9.0.1"
 	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"enabledApiProposals": [
 		"notebookEditorEdit",
 		"notebookEditor"
 	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandJupyterLSPMiddleware#readme",
+	"keywords": [
+		"land"
+	],
+	"license": "SEE LICENSE IN LICENSE",
+	"main": "dist/node/index.js",
+	"name": "@vscode/jupyter-lsp-middleware",
 	"overrides": {
 		"terser@<5.14.2": "5.14.2"
-	}
+	},
+	"private": false,
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandJupyterLSPMiddleware.git"
+	},
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"buildTests": "npm run download-api && npm run copyTestAssets && npm run compilewatch",
+		"compile": "tsc -p ./",
+		"compilewatch": "tsc -watch -p ./",
+		"copyTestAssets": "node ./scripts/prepareTest.js",
+		"download-api": "vscode-dts dev",
+		"postdownload-api": "vscode-dts main",
+		"prepare": "npm run download-api",
+		"prepublishOnly": "Build 'Source/**/*.ts'",
+		"webpack": "webpack --mode production && node ./scripts/optimizeTypings.js",
+		"webpack-dev": "webpack --mode development --watch",
+		"webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js"
+	},
+	"type": "module",
+	"types": "dist/node/index.d.ts",
+	"version": "0.0.1"
 }
