@@ -1,26 +1,6 @@
 {
 	"name": "@vscode/jupyter-lsp-middleware",
-	"version": "0.0.1",
-	"private": false,
 	"description": "VS Code Python Language Server Middleware for Jupyter Notebook",
-	"keywords": [
-		"land"
-	],
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandJupyterLSPMiddleware#readme",
-	"bugs": {
-		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandJupyterLSPMiddleware/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/LandJupyterLSPMiddleware.git"
-	},
-	"license": "SEE LICENSE IN LICENSE",
-	"author": {
-		"name": "🛬 Land —",
-		"email": "Land@PlayForm.Cloud",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
-	"type": "module",
 	"main": "dist/node/index.js",
 	"types": "dist/node/index.d.ts",
 	"scripts": {
@@ -43,7 +23,6 @@
 	},
 	"devDependencies": {
 		"@playform/build": "0.0.7",
-		"@playform/document": "0.0.6",
 		"@types/chai": "4.3.16",
 		"@types/fs-extra": "11.0.4",
 		"@types/glob": "8.1.0",
@@ -60,9 +39,6 @@
 		"tmp": "0.2.3",
 		"ts-loader": "9.5.1",
 		"uuid": "9.0.1"
-	},
-	"publishConfig": {
-		"access": "public"
 	},
 	"enabledApiProposals": [
 		"notebookEditorEdit",
