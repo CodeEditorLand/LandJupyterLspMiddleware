@@ -1,26 +1,26 @@
 {
 	"dependencies": {
-		"fast-myers-diff": "^3.0.1",
+		"fast-myers-diff": "^3.2.0",
 		"sha.js": "^2.4.11"
 	},
 	"description": "VS Code Python Language Server Middleware for Jupyter Notebook",
 	"devDependencies": {
-		"@types/chai": "^4.2.21",
-		"@types/fs-extra": "^5.0.1",
-		"@types/glob": "^7.1.1",
-		"@types/node": "^12.19.12",
-		"@types/sha.js": "^2.4.0",
-		"@types/sinon": "^10.0.2",
-		"@types/tmp": "^0.2.1",
-		"@types/uuid": "^3.4.3",
-		"chai": "^4.3.4",
-		"fs-extra": "^10.0.0",
-		"glob": "^7.1.4",
-		"screenshot-desktop": "^1.12.7",
-		"sinon": "^11.1.2",
-		"tmp": "^0.2.1",
-		"ts-loader": "^7.0.5",
-		"uuid": "^3.4.0"
+		"@types/chai": "^4.3.16",
+		"@types/fs-extra": "^11.0.4",
+		"@types/glob": "^8.1.0",
+		"@types/node": "^20.14.2",
+		"@types/sha.js": "^2.4.4",
+		"@types/sinon": "^17.0.3",
+		"@types/tmp": "^0.2.6",
+		"@types/uuid": "^9.0.8",
+		"chai": "^5.1.1",
+		"fs-extra": "^11.2.0",
+		"glob": "^10.4.1",
+		"screenshot-desktop": "^1.15.0",
+		"sinon": "^18.0.0",
+		"tmp": "^0.2.3",
+		"ts-loader": "^9.5.1",
+		"uuid": "^10.0.0"
 	},
 	"enabledApiProposals": [
 		"notebookEditorEdit",
