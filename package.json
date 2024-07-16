@@ -16,26 +16,26 @@
 		"webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js"
 	},
 	"dependencies": {
-		"fast-myers-diff": "^3.0.1",
-		"sha.js": "^2.4.11"
+		"fast-myers-diff": "3.0.1",
+		"sha.js": "2.4.11"
 	},
 	"devDependencies": {
-		"@types/chai": "^4.2.21",
-		"@types/fs-extra": "^5.0.1",
-		"@types/glob": "^7.1.1",
-		"@types/node": "^12.19.12",
-		"@types/sha.js": "^2.4.0",
-		"@types/sinon": "^10.0.2",
-		"@types/tmp": "^0.2.1",
-		"@types/uuid": "^3.4.3",
-		"chai": "^4.3.4",
-		"fs-extra": "^10.0.0",
-		"glob": "^7.1.4",
-		"screenshot-desktop": "^1.12.7",
-		"sinon": "^11.1.2",
-		"tmp": "^0.2.1",
-		"ts-loader": "^7.0.5",
-		"uuid": "^3.4.0"
+		"@types/chai": "4.2.21",
+		"@types/fs-extra": "5.0.1",
+		"@types/glob": "7.1.1",
+		"@types/node": "12.19.12",
+		"@types/sha.js": "2.4.0",
+		"@types/sinon": "10.0.2",
+		"@types/tmp": "0.2.1",
+		"@types/uuid": "3.4.3",
+		"chai": "4.3.4",
+		"fs-extra": "10.0.0",
+		"glob": "7.1.4",
+		"screenshot-desktop": "1.12.7",
+		"sinon": "11.1.2",
+		"tmp": "0.2.1",
+		"ts-loader": "7.0.5",
+		"uuid": "3.4.0"
 	},
 	"enabledApiProposals": [
 		"notebookEditorEdit",
