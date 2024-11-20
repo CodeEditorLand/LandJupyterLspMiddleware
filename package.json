@@ -1,9 +1,24 @@
 {
+	"name": "@vscode/jupyter-lsp-middleware",
+	"description": "VS Code Python Language Server Middleware for Jupyter Notebook",
+	"main": "dist/node/index.js",
+	"types": "dist/node/index.d.ts",
+	"scripts": {
+		"buildTests": "npm run download-api && npm run copyTestAssets && npm run compilewatch",
+		"compile": "tsc -p ./",
+		"compilewatch": "tsc -watch -p ./",
+		"copyTestAssets": "node ./scripts/prepareTest.js",
+		"download-api": "vscode-dts dev",
+		"postdownload-api": "vscode-dts main",
+		"prepare": "npm run download-api",
+		"webpack": "webpack --mode production && node ./scripts/optimizeTypings.js",
+		"webpack-dev": "webpack --mode development --watch",
+		"webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js"
+	},
 	"dependencies": {
 		"fast-myers-diff": "3.2.0",
 		"sha.js": "2.4.11"
 	},
-	"description": "VS Code Python Language Server Middleware for Jupyter Notebook",
 	"devDependencies": {
 		"@types/chai": "5.0.1",
 		"@types/fs-extra": "11.0.4",
@@ -26,22 +41,7 @@
 		"notebookEditorEdit",
 		"notebookEditor"
 	],
-	"main": "dist/node/index.js",
-	"name": "@vscode/jupyter-lsp-middleware",
 	"overrides": {
 		"terser@<5.14.2": "5.14.2"
-	},
-	"scripts": {
-		"buildTests": "npm run download-api && npm run copyTestAssets && npm run compilewatch",
-		"compile": "tsc -p ./",
-		"compilewatch": "tsc -watch -p ./",
-		"copyTestAssets": "node ./scripts/prepareTest.js",
-		"download-api": "vscode-dts dev",
-		"postdownload-api": "vscode-dts main",
-		"prepare": "npm run download-api",
-		"webpack": "webpack --mode production && node ./scripts/optimizeTypings.js",
-		"webpack-dev": "webpack --mode development --watch",
-		"webpack-link": "webpack --mode development && node ./scripts/optimizeTypings.js"
-	},
-	"types": "dist/node/index.d.ts"
+	}
 }
