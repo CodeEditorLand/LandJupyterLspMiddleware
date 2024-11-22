@@ -103,6 +103,7 @@ export class NotebookMiddlewareAddon
 		) => {
 			// Handle workspace/configuration requests.
 			let settings = next(params, token);
+
 			if (isThenable(settings)) {
 				settings = await settings;
 			}
@@ -140,11 +141,13 @@ export class NotebookMiddlewareAddon
 			);
 			// Make sure still open.
 			const isOpen = this.converter.isOpen(documentItem);
+
 			if (isOpen) {
 				// Send this to our converter and then the change notification to the server
 				const params = this.converter.handleRefresh(
 					asRefreshEvent(notebook, this.cellSelector),
 				);
+
 				if (params) {
 					client.sendNotification(
 						protocol.DidChangeTextDocumentNotification.type,
@@ -158,11 +161,14 @@ export class NotebookMiddlewareAddon
 	public stopWatching(notebook: vscode.NotebookDocument): void {
 		// Just close the document. This should cause diags and other things to be cleared
 		const client = this.getClient();
+
 		if (client && notebook.cellCount > 0) {
 			const documentItem = this.asTextDocumentIdentifier(
 				notebook.cellAt(0).document,
 			);
+
 			const outgoing = this.converter.toConcatDocument(documentItem);
+
 			const params: protocol.DidCloseTextDocumentParams = {
 				textDocument: outgoing,
 			};
@@ -219,13 +225,17 @@ export class NotebookMiddlewareAddon
 			score(event.document, this.cellSelector)
 		) {
 			const documentItem = this.asTextDocumentIdentifier(event.document);
+
 			const sentOpen = this.converter.isOpen(documentItem);
+
 			const params = this.converter.handleChange(
 				client.code2ProtocolConverter.asChangeTextDocumentParams(event),
 			);
+
 			if (!sentOpen) {
 				// First time opening, send an open instead
 				const newDoc = this.converter.toConcatDocument(documentItem);
+
 				const params: protocol.DidOpenTextDocumentParams = {
 					textDocument: newDoc,
 				};
@@ -257,8 +267,11 @@ export class NotebookMiddlewareAddon
 			score(document, this.cellSelector)
 		) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const documentItem = this.asTextDocumentItem(document);
+
 			const sentOpen = this.converter.isOpen(documentId);
+
 			const params = this.converter.handleOpen({
 				textDocument: documentItem,
 			});
@@ -295,11 +308,15 @@ export class NotebookMiddlewareAddon
 		) {
 			// Track if this is the message that closes the whole thing.
 			const documentItem = this.asTextDocumentItem(document);
+
 			const wasOpen = this.converter.isOpen(documentItem);
+
 			const params = this.converter.handleClose({
 				textDocument: documentItem,
 			});
+
 			const isClosed = !this.converter.isOpen(documentItem);
+
 			if (isClosed && wasOpen) {
 				// All cells deleted, send a close notification
 				const newDoc = this.converter.toConcatDocument(documentItem);
@@ -352,33 +369,41 @@ export class NotebookMiddlewareAddon
 		_next: ProvideCompletionItemsSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const convertedParams =
 				client.code2ProtocolConverter.asCompletionParams(
 					document,
 					position,
 					context,
 				);
+
 			const params: protocol.CompletionParams = {
 				textDocument: newDoc,
 				position: newPos,
 				context: convertedParams.context,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.CompletionRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookCompletions(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asCompletionResult(
 				notebookResults,
 			);
@@ -393,26 +418,33 @@ export class NotebookMiddlewareAddon
 		_next: ProvideHoverSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.HoverParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.HoverRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookHover(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asHover(notebookResults);
 		}
 	}
@@ -438,29 +470,36 @@ export class NotebookMiddlewareAddon
 		_next: ProvideSignatureHelpSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const convertedParams =
 				client.code2ProtocolConverter.asSignatureHelpParams(
 					document,
 					position,
 					context,
 				);
+
 			const params: protocol.SignatureHelpParams = {
 				textDocument: newDoc,
 				position: newPos,
 				context: convertedParams.context,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.SignatureHelpRequest.type,
 				params,
 				token,
 			);
+
 			return client.protocol2CodeConverter.asSignatureHelp(result);
 		}
 	}
@@ -472,23 +511,30 @@ export class NotebookMiddlewareAddon
 		_next: ProvideDefinitionSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.DefinitionParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.DefinitionRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookLocations(result);
+
 			return client.protocol2CodeConverter.asDefinitionResult(
 				notebookResults,
 			);
@@ -505,13 +551,17 @@ export class NotebookMiddlewareAddon
 		_next: ProvideReferencesSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.ReferenceParams = {
 				textDocument: newDoc,
 				position: newPos,
@@ -519,12 +569,15 @@ export class NotebookMiddlewareAddon
 					includeDeclaration: options.includeDeclaration,
 				},
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.ReferencesRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookLocations(result);
+
 			return client.protocol2CodeConverter.asReferences(notebookResults);
 		}
 	}
@@ -536,26 +589,33 @@ export class NotebookMiddlewareAddon
 		_next: ProvideDocumentHighlightsSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.DocumentHighlightParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.DocumentHighlightRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookHighlight(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asDocumentHighlights(
 				notebookResults,
 			);
@@ -568,22 +628,29 @@ export class NotebookMiddlewareAddon
 		_next: ProvideDocumentSymbolsSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const params: protocol.DocumentSymbolParams = {
 				textDocument: newDoc,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.DocumentSymbolRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookSymbols(
 				documentId,
 				result,
 			);
+
 			const element = notebookResults ? notebookResults[0] : undefined;
+
 			if (protocol.DocumentSymbol.is(element)) {
 				return client.protocol2CodeConverter.asDocumentSymbols(
 					notebookResults as protocol.DocumentSymbol[],
@@ -602,17 +669,21 @@ export class NotebookMiddlewareAddon
 		_next: ProvideWorkspaceSymbolsSignature,
 	) {
 		const client = this.getClient();
+
 		if (client) {
 			const params: protocol.WorkspaceSymbolParams = {
 				query,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.WorkspaceSymbolRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults =
 				this.converter.toNotebookWorkspaceSymbols(result);
+
 			return client.protocol2CodeConverter.asSymbolInformations(
 				notebookResults,
 			);
@@ -631,6 +702,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideCodeActions not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -645,6 +717,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideCodeLenses not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -673,6 +746,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideDocumentFormattingEdits not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -689,6 +763,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideDocumentRangeFormattingEdits not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -706,6 +781,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideOnTypeFormattingEdits not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -722,6 +798,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideRenameEdits not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -737,6 +814,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"prepareRename not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -751,6 +829,7 @@ export class NotebookMiddlewareAddon
 			this.traceInfo(
 				"provideDocumentLinks not currently supported for notebooks",
 			);
+
 			return undefined;
 		}
 	}
@@ -777,10 +856,13 @@ export class NotebookMiddlewareAddon
 			const incomingUriString = this.converter.toNotebookUri(
 				uri.toString(),
 			);
+
 			const incomingUri = incomingUriString
 				? vscode.Uri.parse(incomingUriString)
 				: undefined;
+
 			const client = this.getClient();
+
 			if (
 				client &&
 				incomingUri &&
@@ -826,23 +908,30 @@ export class NotebookMiddlewareAddon
 		_next: ProvideTypeDefinitionSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.TypeDefinitionParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.TypeDefinitionRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookLocations(result);
+
 			return client.protocol2CodeConverter.asDefinitionResult(
 				notebookResults,
 			);
@@ -856,23 +945,30 @@ export class NotebookMiddlewareAddon
 		_next: ProvideImplementationSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.ImplementationParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.ImplementationRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookLocations(result);
+
 			return client.protocol2CodeConverter.asDefinitionResult(
 				notebookResults,
 			);
@@ -885,21 +981,27 @@ export class NotebookMiddlewareAddon
 		_next: ProvideDocumentColorsSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const params: protocol.DocumentColorParams = {
 				textDocument: newDoc,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.DocumentColorRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookColorInformations(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asColorInformations(
 				notebookResults,
 			);
@@ -915,27 +1017,34 @@ export class NotebookMiddlewareAddon
 		_next: ProvideColorPresentationSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(context.document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(context.document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newRange = this.converter.toRealRange(
 				documentId,
 				context.range,
 			);
+
 			const params: protocol.ColorPresentationParams = {
 				textDocument: newDoc,
 				range: newRange,
 				color,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.ColorPresentationRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookColorPresentations(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asColorPresentations(
 				notebookResults,
 			);
@@ -949,21 +1058,27 @@ export class NotebookMiddlewareAddon
 		_next: ProvideFoldingRangeSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const params: protocol.FoldingRangeParams = {
 				textDocument: newDoc,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.FoldingRangeRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookFoldingRanges(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asFoldingRanges(
 				notebookResults,
 			);
@@ -977,23 +1092,30 @@ export class NotebookMiddlewareAddon
 		_next: ProvideDeclarationSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.DeclarationParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.DeclarationRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookLocations(result);
+
 			return client.protocol2CodeConverter.asDeclarationResult(
 				notebookResults,
 			);
@@ -1007,26 +1129,33 @@ export class NotebookMiddlewareAddon
 		_next: ProvideSelectionRangeSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPositions = this.converter.toConcatPositions(
 				documentId,
 				positions,
 			);
+
 			const params: protocol.SelectionRangeParams = {
 				textDocument: newDoc,
 				positions: newPositions,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.SelectionRangeRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookSelectionRanges(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asSelectionRanges(
 				notebookResults,
 			);
@@ -1040,26 +1169,33 @@ export class NotebookMiddlewareAddon
 		_next: PrepareCallHierarchySignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPos = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.CallHierarchyPrepareParams = {
 				textDocument: newDoc,
 				position: newPos,
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.CallHierarchyPrepareRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults = this.converter.toNotebookCallHierarchyItems(
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asCallHierarchyItems(
 				notebookResults,
 			);
@@ -1071,14 +1207,19 @@ export class NotebookMiddlewareAddon
 		_next: CallHierarchyIncomingCallsSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(item.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(item.uri);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newRange = this.converter.toRealRange(documentId, item.range);
+
 			const newSelectionRange = this.converter.toRealRange(
 				documentId,
 				item.selectionRange,
 			);
+
 			const params: protocol.CallHierarchyIncomingCallsParams = {
 				item: {
 					...client.code2ProtocolConverter.asCallHierarchyItem(item),
@@ -1087,16 +1228,19 @@ export class NotebookMiddlewareAddon
 					selectionRange: newSelectionRange,
 				},
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.CallHierarchyIncomingCallsRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults =
 				this.converter.toNotebookCallHierarchyIncomingCallItems(
 					documentId,
 					result,
 				);
+
 			return client.protocol2CodeConverter.asCallHierarchyIncomingCalls(
 				notebookResults,
 			);
@@ -1108,14 +1252,19 @@ export class NotebookMiddlewareAddon
 		_next: CallHierarchyOutgoingCallsSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(item.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(item.uri);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newRange = this.converter.toRealRange(documentId, item.range);
+
 			const newSelectionRange = this.converter.toRealRange(
 				documentId,
 				item.selectionRange,
 			);
+
 			const params: protocol.CallHierarchyOutgoingCallsParams = {
 				item: {
 					...client.code2ProtocolConverter.asCallHierarchyItem(item),
@@ -1124,16 +1273,19 @@ export class NotebookMiddlewareAddon
 					selectionRange: newSelectionRange,
 				},
 			};
+
 			const result = await client.sendRequest(
 				protocolNode.CallHierarchyOutgoingCallsRequest.type,
 				params,
 				token,
 			);
+
 			const notebookResults =
 				this.converter.toNotebookCallHierarchyOutgoingCallItems(
 					documentId,
 					result,
 				);
+
 			return client.protocol2CodeConverter.asCallHierarchyOutgoingCalls(
 				notebookResults,
 			);
@@ -1146,8 +1298,10 @@ export class NotebookMiddlewareAddon
 		_next: DocumentSemanticsTokensSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
 
 			// Since tokens are for a cell, we need to change the request for a range and not the entire document.
@@ -1157,6 +1311,7 @@ export class NotebookMiddlewareAddon
 				textDocument: newDoc,
 				range: newRange,
 			};
+
 			const result = await client.sendRequest(
 				protocol.SemanticTokensRangeRequest.type,
 				params,
@@ -1168,6 +1323,7 @@ export class NotebookMiddlewareAddon
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asSemanticTokens(
 				notebookResults,
 			);
@@ -1183,8 +1339,10 @@ export class NotebookMiddlewareAddon
 		// doesn't know about the cell so it sends back ALL tokens.
 		// Instead just ask for a range.
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
 
 			// Since tokens are for a cell, we need to change the request for a range and not the entire document.
@@ -1194,6 +1352,7 @@ export class NotebookMiddlewareAddon
 				textDocument: newDoc,
 				range: newRange,
 			};
+
 			const result = await client.sendRequest(
 				protocol.SemanticTokensRangeRequest.type,
 				params,
@@ -1205,6 +1364,7 @@ export class NotebookMiddlewareAddon
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asSemanticTokens(
 				notebookResults,
 			);
@@ -1217,14 +1377,19 @@ export class NotebookMiddlewareAddon
 		_next: DocumentRangeSemanticTokensSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newRange = this.converter.toRealRange(documentId, range);
+
 			const params: protocol.SemanticTokensRangeParams = {
 				textDocument: newDoc,
 				range: newRange,
 			};
+
 			const result = await client.sendRequest(
 				protocol.SemanticTokensRangeRequest.type,
 				params,
@@ -1236,6 +1401,7 @@ export class NotebookMiddlewareAddon
 				documentId,
 				result,
 			);
+
 			return client.protocol2CodeConverter.asSemanticTokens(
 				notebookResults,
 			);
@@ -1249,17 +1415,22 @@ export class NotebookMiddlewareAddon
 		_next: ProvideLinkedEditingRangeSignature,
 	) {
 		const client = this.getClient();
+
 		if (this.shouldProvideIntellisense(document.uri) && client) {
 			const documentId = this.asTextDocumentIdentifier(document);
+
 			const newDoc = this.converter.toConcatDocument(documentId);
+
 			const newPosition = this.converter.toConcatPosition(
 				documentId,
 				position,
 			);
+
 			const params: protocol.LinkedEditingRangeParams = {
 				textDocument: newDoc,
 				position: newPosition,
 			};
+
 			const result = await client.sendRequest(
 				protocol.LinkedEditingRangeRequest.type,
 				params,
@@ -1272,6 +1443,7 @@ export class NotebookMiddlewareAddon
 					documentId,
 					result,
 				);
+
 			return client.protocol2CodeConverter.asLinkedEditingRanges(
 				notebookResults,
 			);

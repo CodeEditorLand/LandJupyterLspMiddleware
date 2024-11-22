@@ -44,6 +44,7 @@ export function isInteractiveCell(cellUri: URI): boolean {
 
 export function splitLines(str: string): string[] {
 	let lines = str.split(/\r?\n/g);
+
 	return lines.slice(0, lines.length - 1); // Skip last empty item
 }
 

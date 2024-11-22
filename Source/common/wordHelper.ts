@@ -23,6 +23,7 @@ export const USUAL_WORD_SEPARATORS = "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?";
  */
 function createWordRegExp(allowInWords: string = ""): RegExp {
 	let source = "(-?\\d*\\.\\d\\w*)|([^";
+
 	for (const sep of USUAL_WORD_SEPARATORS) {
 		if (allowInWords.indexOf(sep) >= 0) {
 			continue;
@@ -30,6 +31,7 @@ function createWordRegExp(allowInWords: string = ""): RegExp {
 		source += `\\${sep}`;
 	}
 	source += "\\s]+)";
+
 	return new RegExp(source, "g");
 }
 
@@ -44,6 +46,7 @@ export function ensureValidWordDefinition(
 	if (wordDefinition && wordDefinition instanceof RegExp) {
 		if (!wordDefinition.global) {
 			let flags = "g";
+
 			if (wordDefinition.ignoreCase) {
 				flags += "i";
 			}
@@ -74,12 +77,16 @@ function getWordAtPosFast(
 	// find whitespace enclosed text around column and match from there
 
 	const pos = column - 1 - textOffset;
+
 	const start = text.lastIndexOf(" ", pos - 1) + 1;
 
 	wordDefinition.lastIndex = start;
+
 	let match: RegExpMatchArray | null = wordDefinition.exec(text);
+
 	while (match) {
 		const matchIndex = match.index || 0;
+
 		if (matchIndex <= pos && wordDefinition.lastIndex >= pos) {
 			return {
 				word: match[0],
@@ -107,8 +114,10 @@ function getWordAtPosSlow(
 	wordDefinition.lastIndex = 0;
 
 	let match: RegExpMatchArray | null = wordDefinition.exec(text);
+
 	while (match) {
 		const matchIndex = match.index || 0;
+
 		if (matchIndex > pos) {
 			// |nW -> matched only after the pos
 			return null;
@@ -135,7 +144,9 @@ export function getWordAtText(
 	// if `words` can contain whitespace character we have to use the slow variant
 	// otherwise we use the fast variant of finding a word
 	wordDefinition.lastIndex = 0;
+
 	const match = wordDefinition.exec(text);
+
 	if (!match) {
 		return null;
 	}
