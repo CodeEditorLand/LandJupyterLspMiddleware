@@ -4,9 +4,13 @@
 import { URI } from "vscode-uri";
 
 export const NotebookScheme = "vscode-notebook";
+
 export const NotebookCellScheme = "vscode-notebook-cell";
+
 export const InteractiveInputScheme = "vscode-interactive-input";
+
 export const InteractiveScheme = "vscode-interactive";
+
 export const PYTHON_LANGUAGE = "python";
 
 export function isThenable<T>(v: any): v is Thenable<T> {
