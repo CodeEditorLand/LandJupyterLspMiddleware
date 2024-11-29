@@ -61,5 +61,6 @@ export function findLastIndex<T>(
 			return i;
 		}
 	}
+
 	return -1;
 }

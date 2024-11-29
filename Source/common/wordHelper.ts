@@ -8,7 +8,9 @@
 
 export interface IWordAtPosition {
 	readonly word: string;
+
 	readonly startColumn: number;
+
 	readonly endColumn: number;
 }
 
@@ -28,8 +30,10 @@ function createWordRegExp(allowInWords: string = ""): RegExp {
 		if (allowInWords.indexOf(sep) >= 0) {
 			continue;
 		}
+
 		source += `\\${sep}`;
 	}
+
 	source += "\\s]+)";
 
 	return new RegExp(source, "g");
@@ -50,6 +54,7 @@ export function ensureValidWordDefinition(
 			if (wordDefinition.ignoreCase) {
 				flags += "i";
 			}
+
 			if (wordDefinition.multiline) {
 				flags += "m";
 			}
@@ -57,6 +62,7 @@ export function ensureValidWordDefinition(
 			if ((wordDefinition as any).unicode) {
 				flags += "u";
 			}
+
 			result = new RegExp(wordDefinition.source, flags);
 		} else {
 			result = wordDefinition;
@@ -94,6 +100,7 @@ function getWordAtPosFast(
 				endColumn: textOffset + 1 + wordDefinition.lastIndex,
 			};
 		}
+
 		match = wordDefinition.exec(text);
 	}
 
@@ -111,6 +118,7 @@ function getWordAtPosSlow(
 	// the desired column. slow but correct
 
 	const pos = column - 1 - textOffset;
+
 	wordDefinition.lastIndex = 0;
 
 	let match: RegExpMatchArray | null = wordDefinition.exec(text);
@@ -129,6 +137,7 @@ function getWordAtPosSlow(
 				endColumn: textOffset + 1 + wordDefinition.lastIndex,
 			};
 		}
+
 		match = wordDefinition.exec(text);
 	}
 

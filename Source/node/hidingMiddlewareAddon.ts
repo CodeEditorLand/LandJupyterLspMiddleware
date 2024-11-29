@@ -99,9 +99,13 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 	constructor() {
 		// Make sure a bunch of functions are bound to this. VS code can call them without a this context
 		this.handleDiagnostics = this.handleDiagnostics.bind(this);
+
 		this.didOpen = this.didOpen.bind(this);
+
 		this.didSave = this.didSave.bind(this);
+
 		this.didChange = this.didChange.bind(this);
+
 		this.didClose = this.didClose.bind(this);
 	}
 
@@ -328,6 +332,7 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 		| Range
 		| {
 				range: Range;
+
 				placeholder: string;
 		  }
 	> {
@@ -403,10 +408,12 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 			return next(document, token);
 		}
 	}
+
 	public provideColorPresentations(
 		color: Color,
 		context: {
 			document: TextDocument;
+
 			range: Range;
 		},
 		token: CancellationToken,
@@ -449,6 +456,7 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 			return next(document, positions, token);
 		}
 	}
+
 	public provideCallHierarchyIncomingCalls(
 		item: CallHierarchyItem,
 		token: CancellationToken,
@@ -458,6 +466,7 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 			return next(item, token);
 		}
 	}
+
 	public provideCallHierarchyOutgoingCalls(
 		item: CallHierarchyItem,
 		token: CancellationToken,
@@ -477,6 +486,7 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 			return next(document, token);
 		}
 	}
+
 	public provideDocumentSemanticTokensEdits(
 		document: TextDocument,
 		previousResultId: string,
@@ -487,6 +497,7 @@ export class HidingMiddlewareAddon implements Middleware, Disposable {
 			return next(document, previousResultId, token);
 		}
 	}
+
 	public provideDocumentRangeSemanticTokens(
 		document: TextDocument,
 		range: Range,

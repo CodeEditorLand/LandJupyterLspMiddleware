@@ -69,6 +69,7 @@ export class NotebookMiddlewareAddon
 	implements protocol.Middleware, vscode.Disposable
 {
 	private converter: NotebookConverter;
+
 	private disposables: vscode.Disposable[] = [];
 
 	constructor(
@@ -87,11 +88,17 @@ export class NotebookMiddlewareAddon
 
 		// Make sure a bunch of functions are bound to this. VS code can call them without a this context
 		this.handleDiagnostics = this.handleDiagnostics.bind(this);
+
 		this.didOpen = this.didOpen.bind(this);
+
 		this.didSave = this.didSave.bind(this);
+
 		this.didChange = this.didChange.bind(this);
+
 		this.didClose = this.didClose.bind(this);
+
 		this.willSave = this.willSave.bind(this);
+
 		this.willSaveWaitUntil = this.willSaveWaitUntil.bind(this);
 	}
 
@@ -107,6 +114,7 @@ export class NotebookMiddlewareAddon
 			if (isThenable(settings)) {
 				settings = await settings;
 			}
+
 			if (settings instanceof protocol.ResponseError) {
 				return settings;
 			}
@@ -127,7 +135,9 @@ export class NotebookMiddlewareAddon
 
 	public dispose(): void {
 		this.disposables.forEach((d) => d.dispose());
+
 		this.disposables = [];
+
 		this.converter.dispose();
 	}
 
@@ -172,6 +182,7 @@ export class NotebookMiddlewareAddon
 			const params: protocol.DidCloseTextDocumentParams = {
 				textDocument: outgoing,
 			};
+
 			client.sendNotification(
 				protocol.DidCloseTextDocumentNotification.type,
 				params,
@@ -205,6 +216,7 @@ export class NotebookMiddlewareAddon
 						client.code2ProtocolConverter.asOpenTextDocumentParams(
 							ev,
 						);
+
 					await client.sendNotification(
 						protocol.DidOpenTextDocumentNotification.type,
 						params,
@@ -239,6 +251,7 @@ export class NotebookMiddlewareAddon
 				const params: protocol.DidOpenTextDocumentParams = {
 					textDocument: newDoc,
 				};
+
 				client.sendNotification(
 					protocol.DidOpenTextDocumentNotification.type,
 					params,
@@ -279,6 +292,7 @@ export class NotebookMiddlewareAddon
 			// If first time opening, just send the initial doc
 			if (!sentOpen) {
 				const newDoc = this.converter.toConcatDocument(documentId);
+
 				client.sendNotification(
 					protocol.DidOpenTextDocumentNotification.type,
 					{ textDocument: newDoc },
@@ -320,6 +334,7 @@ export class NotebookMiddlewareAddon
 			if (isClosed && wasOpen) {
 				// All cells deleted, send a close notification
 				const newDoc = this.converter.toConcatDocument(documentItem);
+
 				client.sendNotification(
 					protocol.DidCloseTextDocumentNotification.type,
 					{ textDocument: newDoc },
@@ -897,6 +912,7 @@ export class NotebookMiddlewareAddon
 			}
 		} catch (e) {
 			this.traceInfo(`Error during handling diagnostics: ${e}`);
+
 			next(uri, []);
 		}
 	}
@@ -1007,10 +1023,12 @@ export class NotebookMiddlewareAddon
 			);
 		}
 	}
+
 	public async provideColorPresentations(
 		color: vscode.Color,
 		context: {
 			document: vscode.TextDocument;
+
 			range: vscode.Range;
 		},
 		token: vscode.CancellationToken,
@@ -1201,6 +1219,7 @@ export class NotebookMiddlewareAddon
 			);
 		}
 	}
+
 	public async provideCallHierarchyIncomingCalls(
 		item: vscode.CallHierarchyItem,
 		token: vscode.CancellationToken,
@@ -1246,6 +1265,7 @@ export class NotebookMiddlewareAddon
 			);
 		}
 	}
+
 	public async provideCallHierarchyOutgoingCalls(
 		item: vscode.CallHierarchyItem,
 		token: vscode.CancellationToken,
@@ -1329,6 +1349,7 @@ export class NotebookMiddlewareAddon
 			);
 		}
 	}
+
 	public async provideDocumentSemanticTokensEdits(
 		document: vscode.TextDocument,
 		_previousResultId: string,
@@ -1370,6 +1391,7 @@ export class NotebookMiddlewareAddon
 			);
 		}
 	}
+
 	public async provideDocumentRangeSemanticTokens(
 		document: vscode.TextDocument,
 		range: vscode.Range,

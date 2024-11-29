@@ -13,7 +13,9 @@ import { NotebookMiddlewareAddon } from "./notebookMiddlewareAddon";
 export type NotebookMiddleware = Middleware &
 	Disposable & {
 		stopWatching(notebook: NotebookDocument): void;
+
 		startWatching(notebook: NotebookDocument): void;
+
 		refresh(notebook: NotebookDocument): void;
 	};
 
